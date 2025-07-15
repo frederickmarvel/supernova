@@ -3,8 +3,12 @@ WORKDIR /app
 COPY go.mod go.sum .  
 RUN go mod download  
 COPY . .
-RUN go build -o service ./cmd/service
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o service ./cmd/service
 
-FROM gcr.io/distroless/base
+FROM alpine:latest
+RUN apk --no-cache add ca-certificates
 COPY --from=builder /app/service /service
+COPY --from=builder /app/.env /.env
+WORKDIR /
+RUN chmod +x /service
 ENTRYPOINT ["/service"]
