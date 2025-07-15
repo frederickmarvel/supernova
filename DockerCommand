@@ -1,0 +1,8 @@
+docker build -t trendservice .
+docker run -e DB_NAME=trends_db \
+           -e DB_USER=postgres \
+           -e DB_PASSWORD=secret \
+           -e DB_HOST=db \
+           -e DB_PORT=5432 \
+           -p 8000:8000 \
+           trendservice
